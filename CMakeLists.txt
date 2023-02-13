@@ -7,6 +7,8 @@ add_executable(benchmark
 	"benchmark.c"
 )
 
+set_property(DIRECTORY . PROPERTY VS_STARTUP_PROJECT benchmark)
+
 # Only require C90.
 set_target_properties(benchmark PROPERTIES
 	C_STANDARD 90
