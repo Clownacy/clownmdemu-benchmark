@@ -5,7 +5,7 @@
 
 #include "clownmdemu/clownmdemu.h"
 
-static const ClownMDEmu_Configuration clownmdemu_configuration = {{CLOWNMDEMU_REGION_OVERSEAS, CLOWNMDEMU_TV_STANDARD_NTSC}, {cc_false, {cc_false, cc_false}}};
+static const ClownMDEmu_Configuration clownmdemu_configuration = {{CLOWNMDEMU_REGION_OVERSEAS, CLOWNMDEMU_TV_STANDARD_NTSC}};
 static ClownMDEmu_Constant clownmdemu_constant;
 static ClownMDEmu_State clownmdemu_state;
 static const ClownMDEmu clownmdemu = CLOWNMDEMU_PARAMETERS_INITIALISE(&clownmdemu_configuration, &clownmdemu_constant, &clownmdemu_state);
