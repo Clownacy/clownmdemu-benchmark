@@ -9,12 +9,16 @@ add_executable(benchmark
 
 set_property(DIRECTORY . PROPERTY VS_STARTUP_PROJECT benchmark)
 
-# Only require C90.
-set_target_properties(benchmark PROPERTIES
-	C_STANDARD 90
-	C_STANDARD_REQUIRED NO
-	C_EXTENSIONS OFF
-)
+if(NINTENDO_3DS)
+	ctr_create_3dsx(benchmark)
+else()
+	# Only require C90.
+	set_target_properties(benchmark PROPERTIES
+		C_STANDARD 90
+		C_STANDARD_REQUIRED NO
+		C_EXTENSIONS OFF
+	)
+endif()
 
 # Link clownmdemu core.
 add_subdirectory("clownmdemu" EXCLUDE_FROM_ALL)

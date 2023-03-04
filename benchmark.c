@@ -3,7 +3,22 @@
 #include <stdlib.h>
 #include <time.h>
 
+#ifdef __3DS__
+#include <3ds.h>
+#endif
+
 #include "clownmdemu/clownmdemu.h"
+
+#ifdef __3DS__
+ #undef CLOCKS_PER_SEC
+ #define CLOCKS_PER_SEC 1000
+
+ #undef clock
+ #define clock osGetTime
+
+ #undef clock_t
+ #define clock_t u64
+#endif
 
 static const ClownMDEmu_Configuration clownmdemu_configuration = {{CLOWNMDEMU_REGION_OVERSEAS, CLOWNMDEMU_TV_STANDARD_NTSC}};
 static ClownMDEmu_Constant clownmdemu_constant;
@@ -112,6 +127,11 @@ int main(const int argc, const char* const * const argv)
 
 	exit_code = EXIT_FAILURE;
 
+#ifdef __3DS__
+	gfxInitDefault();
+	consoleInit(GFX_TOP, NULL);
+#endif
+
 	if (argc < 3)
 	{
 		fputs("Error: Must pass path to ROM file and number of iterations.\n", stderr);
@@ -172,6 +192,16 @@ int main(const int argc, const char* const * const argv)
 				average /= average_buffer_total;
 
 				fprintf(stdout, "Average time taken: %f\n", average);
+
+			#ifdef __3DS__
+				if (!aptMainLoop())
+					break;
+
+				hidScanInput();
+
+				if (hidKeysHeld() != 0)
+					break;
+			#endif
 			}
 
 			free(rom);
@@ -179,6 +209,10 @@ int main(const int argc, const char* const * const argv)
 			exit_code = EXIT_SUCCESS;
 		}
 	}
+
+#ifdef __3DS__
+	gfxExit();
+#endif
 
 	return exit_code;
 }
