@@ -30,7 +30,7 @@ static cc_s16l sample_buffer[CC_MAX(CC_MAX(CLOWNMDEMU_FM_SAMPLE_RATE_NTSC, CLOWN
 static unsigned char *rom;
 static size_t rom_size;
 
-static cc_u16f CartridgeRead(const void* const user_data, const cc_u32f address)
+static cc_u8f CartridgeRead(const void* const user_data, const cc_u32f address)
 {
 	(void)user_data;
 
@@ -40,7 +40,7 @@ static cc_u16f CartridgeRead(const void* const user_data, const cc_u32f address)
 		return 0;
 }
 
-static void CartridgeWritten(const void* const user_data, const cc_u32f address, const cc_u16f value)
+static void CartridgeWritten(const void* const user_data, const cc_u32f address, const cc_u8f value)
 {
 	(void)user_data;
 	(void)address;
@@ -63,7 +63,7 @@ static void ScanlineRendered(const void* const user_data, const cc_u16f scanline
 	(void)screen_height;
 }
 
-static cc_bool InputRequested(const void* const user_data, const cc_u16f player_id, const ClownMDEmu_Button button_id)
+static cc_bool InputRequested(const void* const user_data, const cc_u8f player_id, const ClownMDEmu_Button button_id)
 {
 	(void)user_data;
 	(void)player_id;
