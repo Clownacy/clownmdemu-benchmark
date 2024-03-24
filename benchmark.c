@@ -91,6 +91,21 @@ static void PSGAudioToBeGenerated(const void* const user_data, const size_t tota
 	generate_psg_audio(&clownmdemu, sample_buffer, total_samples);
 }
 
+static void CDSeeked(const void* const user_data, const cc_u32f sector_index)
+{
+	(void)user_data;
+	(void)sector_index;
+}
+
+static const cc_u8l* CDSectorRead(const void* const user_data)
+{
+	static cc_u8l buffer[2048];
+
+	(void)user_data;
+
+	return buffer;
+}
+
 static cc_bool LoadFile(const char* const file_path, unsigned char** const file_buffer, size_t* const file_size)
 {
 	FILE* const file = fopen(file_path, "rb");
@@ -173,11 +188,13 @@ int main(const int argc, const char* const * const argv)
 					ScanlineRendered,
 					InputRequested,
 					FMAudioToBeGenerated,
-					PSGAudioToBeGenerated
+					PSGAudioToBeGenerated,
+					CDSeeked,
+					CDSectorRead
 				};
 
 				ClownMDEmu_State_Initialise(&clownmdemu_state);
-				ClownMDEmu_Reset(&clownmdemu, &clownmdemu_callbacks);
+				ClownMDEmu_Reset(&clownmdemu, &clownmdemu_callbacks, cc_false);
 
 				start_time = clock();
 
