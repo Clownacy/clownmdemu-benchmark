@@ -28,14 +28,13 @@ static const ClownMDEmu_Configuration clownmdemu_configuration = {
 };
 static ClownMDEmu_Constant clownmdemu_constant;
 static ClownMDEmu_State clownmdemu_state;
-static const ClownMDEmu clownmdemu = CLOWNMDEMU_PARAMETERS_INITIALISE(&clownmdemu_configuration, &clownmdemu_constant, &clownmdemu_state);
 
 static cc_s16l sample_buffer[CC_MAX(CC_MAX(CLOWNMDEMU_FM_SAMPLE_RATE_NTSC, CLOWNMDEMU_FM_SAMPLE_RATE_PAL) * 2, CC_MAX(CLOWNMDEMU_PSG_SAMPLE_RATE_NTSC, CLOWNMDEMU_PSG_SAMPLE_RATE_PAL))];
 
 static unsigned char *rom;
 static size_t rom_size;
 
-static cc_u8f CartridgeRead(const void* const user_data, const cc_u32f address)
+static cc_u8f CartridgeRead(void* const user_data, const cc_u32f address)
 {
 	(void)user_data;
 
@@ -45,21 +44,21 @@ static cc_u8f CartridgeRead(const void* const user_data, const cc_u32f address)
 		return 0;
 }
 
-static void CartridgeWritten(const void* const user_data, const cc_u32f address, const cc_u8f value)
+static void CartridgeWritten(void* const user_data, const cc_u32f address, const cc_u8f value)
 {
 	(void)user_data;
 	(void)address;
 	(void)value;
 }
 
-static void ColourUpdated(const void* const user_data, const cc_u16f index, const cc_u16f colour)
+static void ColourUpdated(void* const user_data, const cc_u16f index, const cc_u16f colour)
 {
 	(void)user_data;
 	(void)index;
 	(void)colour;
 }
 
-static void ScanlineRendered(const void* const user_data, const cc_u16f scanline, const cc_u8l* const pixels, const cc_u16f screen_width, const cc_u16f screen_height)
+static void ScanlineRendered(void* const user_data, const cc_u16f scanline, const cc_u8l* const pixels, const cc_u16f screen_width, const cc_u16f screen_height)
 {
 	(void)user_data;
 	(void)scanline;
@@ -68,7 +67,7 @@ static void ScanlineRendered(const void* const user_data, const cc_u16f scanline
 	(void)screen_height;
 }
 
-static cc_bool InputRequested(const void* const user_data, const cc_u8f player_id, const ClownMDEmu_Button button_id)
+static cc_bool InputRequested(void* const user_data, const cc_u8f player_id, const ClownMDEmu_Button button_id)
 {
 	(void)user_data;
 	(void)player_id;
@@ -77,27 +76,20 @@ static cc_bool InputRequested(const void* const user_data, const cc_u8f player_i
 	return cc_false;
 }
 
-static void FMAudioToBeGenerated(const void* const user_data, const size_t total_frames, void (* const generate_fm_audio)(const ClownMDEmu *clownmdemu, cc_s16l *sample_buffer, size_t total_frames))
+static void AudioToBeGenerated(void* const user_data, const ClownMDEmu* const clownmdemu, const size_t total_frames, void (* const generate_fm_audio)(const ClownMDEmu *clownmdemu, cc_s16l *sample_buffer, size_t total_frames))
 {
 	(void)user_data;
 
-	generate_fm_audio(&clownmdemu, sample_buffer, total_frames);
+	generate_fm_audio(clownmdemu, sample_buffer, total_frames);
 }
 
-static void PSGAudioToBeGenerated(const void* const user_data, const size_t total_samples, void (* const generate_psg_audio)(const ClownMDEmu *clownmdemu, cc_s16l *sample_buffer, size_t total_samples))
-{
-	(void)user_data;
-
-	generate_psg_audio(&clownmdemu, sample_buffer, total_samples);
-}
-
-static void CDSeeked(const void* const user_data, const cc_u32f sector_index)
+static void CDSeeked(void* const user_data, const cc_u32f sector_index)
 {
 	(void)user_data;
 	(void)sector_index;
 }
 
-static const cc_u8l* CDSectorRead(const void* const user_data)
+static const cc_u8l* CDSectorRead(void* const user_data)
 {
 	static cc_u8l buffer[2048];
 
@@ -187,19 +179,22 @@ int main(const int argc, const char* const * const argv)
 					ColourUpdated,
 					ScanlineRendered,
 					InputRequested,
-					FMAudioToBeGenerated,
-					PSGAudioToBeGenerated,
+					AudioToBeGenerated,
+					AudioToBeGenerated,
+					AudioToBeGenerated,
+					AudioToBeGenerated,
 					CDSeeked,
 					CDSectorRead
 				};
+				static const ClownMDEmu clownmdemu = CLOWNMDEMU_PARAMETERS_INITIALISE(&clownmdemu_configuration, &clownmdemu_constant, &clownmdemu_state, &clownmdemu_callbacks);
 
 				ClownMDEmu_State_Initialise(&clownmdemu_state);
-				ClownMDEmu_Reset(&clownmdemu, &clownmdemu_callbacks, cc_false);
+				ClownMDEmu_Reset(&clownmdemu, cc_false);
 
 				start_time = clock();
 
 				for (i = 0; i < total_iterations; ++i)
-					ClownMDEmu_Iterate(&clownmdemu, &clownmdemu_callbacks);
+					ClownMDEmu_Iterate(&clownmdemu);
 
 				time_taken = (double)(clock() - start_time) / CLOCKS_PER_SEC;
 				average_buffer[average_buffer_index] = time_taken;
