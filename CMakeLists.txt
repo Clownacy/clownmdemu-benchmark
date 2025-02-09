@@ -22,4 +22,4 @@ endif()
 
 # Link clownmdemu core.
 add_subdirectory("clownmdemu" EXCLUDE_FROM_ALL)
-target_link_libraries(benchmark clownmdemu)
+target_link_libraries(benchmark clownmdemu-core)

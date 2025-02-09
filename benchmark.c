@@ -89,13 +89,78 @@ static void CDSeeked(void* const user_data, const cc_u32f sector_index)
 	(void)sector_index;
 }
 
-static const cc_u8l* CDSectorRead(void* const user_data)
+static void CDSectorRead(void* const user_data, cc_u16l* const buffer)
 {
-	static cc_u8l buffer[2048];
+	(void)user_data;
+	(void)buffer;
+}
+static cc_bool CDSeekTrack(void* const user_data, const cc_u16f track_index, const ClownMDEmu_CDDAMode mode)
+{
+	(void)user_data;
+	(void)track_index;
+	(void)mode;
 
+	return cc_false;
+}
+
+static size_t CDAudioRead(void* const user_data, cc_s16l* const sample_buffer, const size_t total_frames)
+{
+	(void)user_data;
+	(void)sample_buffer;
+	(void)total_frames;
+
+	return 0;
+}
+
+static cc_bool SaveFileOpenedForReading(void* const user_data, const char* const filename)
+{
+	(void)user_data;
+	(void)filename;
+
+	return cc_false;
+}
+
+static cc_s16f SaveFileRead(void* const user_data)
+{
 	(void)user_data;
 
-	return buffer;
+	return 0;
+}
+
+static cc_bool SaveFileOpenedForWriting(void* const user_data, const char* const filename)
+{
+	(void)user_data;
+	(void)filename;
+
+	return cc_false;
+}
+
+static void SaveFileWritten(void* const user_data, const cc_u8f byte)
+{
+	(void)user_data;
+	(void)byte;
+}
+
+static void SaveFileClosed(void* const user_data)
+{
+	(void)user_data;
+}
+
+static cc_bool SaveFileRemoved(void* const user_data, const char* const filename)
+{
+	(void)user_data;
+	(void)filename;
+
+	return cc_false;
+}
+
+static cc_bool SaveFileSizeObtained(void* const user_data, const char* const filename, size_t* const size)
+{
+	(void)user_data;
+	(void)filename;
+	(void)size;
+
+	return cc_false;
 }
 
 static cc_bool LoadFile(const char* const file_path, unsigned char** const file_buffer, size_t* const file_size)
@@ -184,7 +249,16 @@ int main(const int argc, const char* const * const argv)
 					AudioToBeGenerated,
 					AudioToBeGenerated,
 					CDSeeked,
-					CDSectorRead
+					CDSectorRead,
+					CDSeekTrack,
+					CDAudioRead,
+					SaveFileOpenedForReading,
+					SaveFileRead,
+					SaveFileOpenedForWriting,
+					SaveFileWritten,
+					SaveFileClosed,
+					SaveFileRemoved,
+					SaveFileSizeObtained
 				};
 				static const ClownMDEmu clownmdemu = CLOWNMDEMU_PARAMETERS_INITIALISE(&clownmdemu_configuration, &clownmdemu_constant, &clownmdemu_state, &clownmdemu_callbacks);
 
