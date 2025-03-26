@@ -23,3 +23,9 @@ endif()
 # Link clownmdemu core.
 add_subdirectory("clownmdemu" EXCLUDE_FROM_ALL)
 target_link_libraries(benchmark clownmdemu-core)
+
+# Link libm (for some reason this isn't automatic).
+find_library(M m)
+if(DEFINED M)
+	target_link_libraries(benchmark m)
+endif()
