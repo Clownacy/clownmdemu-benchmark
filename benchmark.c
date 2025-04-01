@@ -21,7 +21,7 @@
 #endif
 
 static const ClownMDEmu_Configuration clownmdemu_configuration = {
-	{CLOWNMDEMU_REGION_OVERSEAS, CLOWNMDEMU_TV_STANDARD_NTSC},
+	{CLOWNMDEMU_REGION_OVERSEAS, CLOWNMDEMU_TV_STANDARD_NTSC, cc_false},
 	{cc_false, cc_false, {cc_false, cc_false}},
 	{{cc_false, cc_false, cc_false, cc_false, cc_false, cc_false}, cc_false, cc_false},
 	{{cc_false, cc_false, cc_false}, cc_false},
@@ -59,7 +59,7 @@ static void ColourUpdated(void* const user_data, const cc_u16f index, const cc_u
 	(void)colour;
 }
 
-static void ScanlineRendered(void* const user_data, const cc_u16f scanline, const cc_u8l* const pixels, const cc_u16f screen_width, const cc_u16f screen_height)
+static void ScanlineRendered(void* const user_data, const cc_u16f scanline, const cc_u8l* const pixels, const cc_u16f left_boundary, const cc_u16f right_boundary, const cc_u16f screen_width, const cc_u16f screen_height)
 {
 	(void)user_data;
 	(void)scanline;
